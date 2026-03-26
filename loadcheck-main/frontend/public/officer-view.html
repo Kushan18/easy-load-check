@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Access - LoadCheck</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/colors.css">
+    <link rel="stylesheet" href="styles/forms.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Prefill from URL if present (from verify.html redirect)
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                document.getElementById('manualTripId').value = id;
+            }
+        });
+
+        // Mock Officer Login
+    </script>
+    <style>
+        .officer-auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+
+        .pin-input-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .pin-digit {
+            width: 50px;
+            height: 60px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+        }
+
+        .pin-digit:focus {
+            border-color: var(--color-accent);
+            outline: none;
+        }
+
+        /* Scan Overlay */
+        .scan-overlay {
+            border: 2px dashed var(--color-text-muted);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .scan-overlay:hover {
+            border-color: var(--color-accent);
+            background-color: #F8FAFC;
+        }
+    </style>
+</head>
+
+<body>
+    <nav style="background: var(--color-bg-card); border-bottom: 1px solid var(--color-border);">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+            <a href="index.html" style="font-weight: 700; font-size: 1.5rem; color: var(--color-primary);">LoadCheck</a>
+            <span class="badge badge-yellow">Officer Portal</span>
+        </div>
+    </nav>
+
+    <div class="container" id="authSection">
+        <div class="officer-auth-container card">
+            <h2 style="margin-bottom: 0.5rem;">Officer Authentication</h2>
+            <p style="color: var(--color-text-muted);">Enter your 4-digit PIN to access verification tools</p>
+
+            <form id="pinForm">
+                <div class="pin-input-group">
+                    <input type="password" class="pin-digit" maxlength="1" required>
+                    <input type="password" class="pin-digit" maxlength="1" required>
+                    <input type="password" class="pin-digit" maxlength="1" required>
+                    <input type="password" class="pin-digit" maxlength="1" required>
+                </div>
+                <!-- Hidden Trip ID input usually pre-filled if scanned, else manual entry -->
+                <input type="text" id="manualTripId" class="form-input" placeholder="Or enter Trip ID manually"
+                    style="margin-bottom: 1rem; text-align: center;">
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Verify Access</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Verification Section (Hidden initially) -->
+    <div class="container" id="verifySection" style="display: none; padding-top: 2rem;">
+        <div class="dashboard-layout" style="min-height: auto;">
+            <main class="main-content" style="padding-left: 0;">
+                <header class="header">
+                    <h2>Trip Verification</h2>
+                    <button class="btn btn-outline" onclick="window.startScanner()">Scan QR Code</button>
+                    <button class="btn btn-outline" onclick="location.reload()">Reload</button>
+                </header>
+
+                <div id="reader" style="width: 100%; display: none; margin-bottom: 2rem;"></div>
+
+                <!-- Authorization Status Banner -->
+                <div id="authStatusBanner" class="card"
+                    style="margin-bottom: 2rem; border-left: 5px solid var(--color-primary); background: #EFF6FF;">
+                    <h3 style="color: var(--color-primary);">State Status: <span id="currentStateDisplay">Pending
+                            Verification</span></h3>
+                    <p style="margin-top: 0.5rem;">Current Location: <strong id="officerState">MH (Maharashtra)</strong>
+                    </p>
+                </div>
+
+                <!-- Trip Details Card (Reuse similar structure to summary) -->
+                <div class="card">
+                    <div class="header"
+                        style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <h3>Trip <span id="displayTripId">TRP-XXXX</span></h3>
+                        <span class="badge" id="riskBadge">Loading...</span>
+                    </div>
+
+                    <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div>
+                            <div class="stat-label">Vehicle</div>
+                            <div class="stat-value" style="font-size: 1.25rem;" id="vehInfo">--</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Cargo Weight</div>
+                            <div class="stat-value" style="font-size: 1.25rem;" id="loadInfo">--</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Capacity Util</div>
+                            <div class="stat-value" style="font-size: 1.25rem;" id="utilInfo">--</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: grid; gap: 1rem;">
+                        <h4>Documents Bundle</h4>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <span class="badge" style="background: #F1F5F9; color: var(--color-text-main);">RC:
+                                Valid</span>
+                            <span class="badge" style="background: #F1F5F9; color: var(--color-text-main);">Insurance:
+                                Valid</span>
+                            <span class="badge" style="background: #F1F5F9; color: var(--color-text-main);">PUC:
+                                Valid</span>
+                            <span class="badge" style="background: #F1F5F9; color: var(--color-text-main);">E-Way Bill:
+                                Valid</span>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--color-border); margin-top: 2rem; padding-top: 2rem;">
+                        <h4>Officer Actions</h4>
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <button class="btn btn-primary" onclick="authorizeTrip()">Mark Authorized in MH</button>
+                            <button class="btn btn-outline"
+                                style="color: var(--color-danger); border-color: var(--color-danger);">Flag
+                                Violation</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/officer.js"></script>
+</body>
+
+</html>

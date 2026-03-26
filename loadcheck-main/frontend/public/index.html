@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoadCheck - Transport Compliance System</title>
+    <meta name="description"
+        content="Assist compliance, reduce delays. Verify load capacity and documentation instantly.">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/colors.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            transition: transform var(--transition-smooth);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: var(--color-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--color-accent);
+        }
+    </style>
+</head>
+
+<body>
+    <nav style="background: var(--color-bg-card); border-bottom: 1px solid var(--color-border);">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+            <a href="index.html" style="font-weight: 700; font-size: 1.5rem; color: var(--color-primary);">LoadCheck</a>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="index.html" style="color: var(--color-text-main);">Home</a>
+                <a href="about.html" style="color: var(--color-text-muted);">About</a>
+                <a href="officer-view.html" style="color: var(--color-text-muted);">Officer Access</a>
+                <a href="login.html" class="btn btn-primary">Transporter Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Transport Compliance, Simplified.</h1>
+            <p class="hero-subtitle">
+                Ensure load safety, verify documentation, and speed up checkpost clearance with our intelligent
+                compliance-assist system.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="login.html" class="btn btn-primary"
+                    style="background: white; color: var(--color-primary); border: none;">Get Started</a>
+                <a href="trip-public.html" class="btn btn-outline"
+                    style="background: transparent; color: white; border: 1px solid white;">Track Shipment</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon-box">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3>Risk Validation</h3>
+                <p style="color: var(--color-text-muted); margin-top: 0.5rem;">
+                    Instantly analyze vehicle capacity vs cargo weight. Automatic Green/Yellow/Red risk scoring.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </div>
+                <h3>QR Verification</h3>
+                <p style="color: var(--color-text-muted); margin-top: 0.5rem;">
+                    Generate secure QR codes for every trip. Officers can scan to verify details instantly.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3>State Authorization</h3>
+                <p style="color: var(--color-text-muted); margin-top: 0.5rem;">
+                    Verified once? Skip checks for the rest of the state. Speed up transit times legally.
+                </p>
+            </div>
+        </div>
+        <footer
+            style="text-align: center; color: var(--color-text-muted); font-size: 0.8rem; margin-top: 2rem; opacity: 0.6;">
+            LoadCheck v1.1.0 (Live)
+        </footer>
+    </section>
+    <!-- Gateway Modal (Auto-triggers if ?id= is present) -->
+    <style>
+        .gateway-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .gateway-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .gateway-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+    </style>
+
+    <div id="gatewayModal" class="gateway-overlay">
+        <div class="gateway-card">
+            <div
+                style="width: 50px; height: 50px; background: #eff6ff; color: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+
+            <h2 style="margin: 0 0 0.5rem; color: #0f172a;">Verify Trip</h2>
+            <div id="modalTripId"
+                style="background: #f1f5f9; color: #475569; padding: 4px 12px; border-radius: 100px; display: inline-block; font-family: monospace; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;">
+                Looking up...
+            </div>
+
+            <p style="color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">
+                Select your role to access this trip's details.
+            </p>
+
+            <a id="modalPublicLink" href="#" class="gateway-btn"
+                style="background: var(--color-primary); color: white;">Public Tracking</a>
+            <a id="modalOfficerLink" href="#" class="gateway-btn"
+                style="background: white; border: 1px solid #cbd5e1; color: #0f172a;">Officer Access</a>
+
+            <button onclick="document.getElementById('gatewayModal').style.display='none'"
+                style="background: none; border: none; color: #94a3b8; font-size: 0.85rem; margin-top: 1rem; cursor: pointer;">Close
+                / Go Home</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tripId = params.get('id');
+
+            if (tripId) {
+                // Open Gateway Modal
+                const modal = document.getElementById('gatewayModal');
+                const title = document.getElementById('modalTripId');
+                const publicLink = document.getElementById('modalPublicLink');
+                const officerLink = document.getElementById('modalOfficerLink');
+
+                modal.style.display = 'flex';
+                title.textContent = `TRIP #${tripId.substring(0, 8).toUpperCase()}`;
+
+                publicLink.href = `trip-public.html?id=${tripId}`;
+                officerLink.href = `officer-view.html?id=${tripId}`;
+            }
+        });
+    </script>
+</body>
+
+</html>

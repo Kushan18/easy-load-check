@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LoadCheck</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/colors.css">
+    <link rel="stylesheet" href="styles/forms.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #F1F5F9;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card animate-fade-in">
+            <div class="brand-header">
+                <a href="index.html"
+                    style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);">LoadCheck</a>
+                <p style="color: var(--color-text-muted); margin-top: 0.5rem;">Transporter Access</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="name@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                </div>
+
+                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; font-size: 0.875rem;">
+                    <label style="display: flex; gap: 0.5rem;">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#" style="color: var(--color-accent);">Forgot password?</a>
+                </div>
+
+                <div id="errorMessage"
+                    style="color: var(--color-danger); font-size: 0.875rem; margin-bottom: 1rem; display: none;"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
+                Don't have an account? <a href="register.html" style="color: var(--color-accent);">Create Account</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const btn = e.target.querySelector('button');
+
+            try {
+                errorDiv.style.display = 'none';
+                btn.disabled = true;
+                btn.textContent = 'Signing In...';
+                await auth.login(email, password);
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+
+</html>

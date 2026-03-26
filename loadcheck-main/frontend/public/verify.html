@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Trip - LoadCheck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
+            --text-dark: #000000;
+            --text-muted: #1a1a1a;
+            /* Very Dark Gray for labels */
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-main);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            padding: 1rem;
+        }
+
+        .gateway-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: #eff6ff;
+            /* Light Blue */
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            color: var(--text-dark);
+        }
+
+        p {
+            color: #64748b;
+            /* Muted slate for body text to avoid harshness */
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .trip-chip {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+            border: 1px solid #cbd5e1;
+        }
+
+        .role-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .btn-public {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-public:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-officer {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-officer:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        /* Footer / Brand */
+        .brand-footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gateway-card">
+        <div class="icon-wrapper">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+
+        <h1>Verify Shipment</h1>
+        <div id="tripDisplay" class="trip-chip" style="display:none;">Loading...</div>
+        <p>Secure verification gateway. Please select your role to proceed.</p>
+
+        <a id="linkPublic" href="#" class="role-btn btn-public">Public Tracking</a>
+        <a id="linkOfficer" href="#" class="role-btn btn-officer">Officer / Inspector</a>
+
+        <div class="brand-footer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Secured by LoadCheck
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tripId = params.get('id');
+
+            if (tripId) {
+                const displayDiv = document.getElementById('tripDisplay');
+                displayDiv.style.display = 'inline-block';
+                displayDiv.textContent = `TRIP #${tripId.substring(0, 8).toUpperCase()}`;
+
+                document.getElementById('linkPublic').href = `trip-public.html?id=${tripId}`;
+                document.getElementById('linkOfficer').href = `officer-view.html?id=${tripId}`;
+            } else {
+                document.querySelector('p').textContent = "No Trip ID found. Scan a valid QR code.";
+                document.querySelectorAll('.role-btn').forEach(b => {
+                    b.style.pointerEvents = 'none';
+                    b.style.opacity = '0.5';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

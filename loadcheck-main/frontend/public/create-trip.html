@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Trip - LoadCheck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
+            --sidebar: #ffffff;
+            --border: #e2e8f0;
+            --text-dark: #000000;
+            --text-muted: #1a1a1a;
+            --safe: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar (Synced with Dashboard) --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .brand {
+            padding: 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0 0.75rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            display: flex;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: 0.2s;
+        }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        /* --- Stepper UI --- */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .step-item.active .step-circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .step-item.active .step-label {
+            color: var(--primary);
+        }
+
+        /* --- Form & Layout --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 2.5rem 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 400px;
+            transform: scale(0.9);
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active .success-card {
+            transform: scale(1);
+        }
+
+        .checkmark-circle {
+            width: 70px;
+            height: 70px;
+            background: var(--safe);
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            LoadCheck
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Overview</a></li>
+            <li><a href="#" class="active">Create Trip</a></li>
+            <li style="margin-top: auto;"><a href="index.html" style="color: var(--danger);">Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="form-container">
+            <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.75rem; font-weight: 700;">Create New Trip</h2>
+                <a href="dashboard.html" class="btn btn-outline" style="text-decoration: none;">Cancel</a>
+            </header>
+
+            <div class="stepper">
+                <div class="step-item active" id="stepIndicator1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Vehicle</div>
+                </div>
+                <div class="step-item" id="stepIndicator2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Driver</div>
+                </div>
+                <div class="step-item" id="stepIndicator3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Cargo</div>
+                </div>
+                <div class="step-item" id="stepIndicator4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Taxes</div>
+                </div>
+                <div class="step-item" id="stepIndicator5">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Verify</div>
+                </div>
+            </div>
+
+            <form id="createTripForm" class="card">
+                <div class="form-step" id="step1">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem;">Vehicle Details</h3>
+                    <div class="form-group">
+                        <label class="form-label">RC Number</label>
+                        <input type="text" name="vehicle_rc" class="form-input" placeholder="e.g., MH 12 AB 1234"
+                            required>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Insurance Expiry</label>
+                            <input type="date" name="insurance_expiry" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">PUC Expiry</label>
+                            <input type="date" name="puc_expiry" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" id="step2" style="display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem;">Driver Details</h3>
+                    <div class="form-group">
+                        <label class="form-label">Driver License Number</label>
+                        <input type="text" name="driver_license" class="form-input" placeholder="DL-1420110012345"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Driver Name</label>
+                        <input type="text" name="driver_name" class="form-input" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Co-Driver License (Optional)</label>
+                        <input type="text" name="codriver_license" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-step" id="step3" style="display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 1rem;">Cargo Details</h3>
+                    <div
+                        style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border);">
+                        <h4
+                            style="font-size: 0.75rem; margin: 0 0 0.5rem; color: var(--text-muted); text-transform: uppercase;">
+                            Risk Management Preview</h4>
+                        <div style="display: flex; gap: 1rem; font-size: 0.75rem; font-weight: 500;">
+                            <span style="display: flex; align-items: center; gap: 4px;"><span
+                                    style="width: 8px; height: 8px; background: var(--safe); border-radius: 50%;"></span>
+                                Green (&lt;80%)</span>
+                            <span style="display: flex; align-items: center; gap: 4px;"><span
+                                    style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></span>
+                                Yellow (80-100%)</span>
+                            <span style="display: flex; align-items: center; gap: 4px;"><span
+                                    style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>
+                                Red (&gt;100%)</span>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Truck Capacity (Tons)</label>
+                            <input type="number" name="capacity" class="form-input" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cargo Weight (Tons)</label>
+                            <input type="number" name="weight" class="form-input" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cargo Type</label>
+                        <select name="cargo_type" class="form-select">
+                            <option value="general">General Goods</option>
+                            <option value="perishable">Perishable / Food</option>
+                            <option value="hazardous">Hazardous / Chemical</option>
+                            <option value="fragile">Fragile / Electronics</option>
+                        </select>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Source</label>
+                            <input type="text" name="source" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Destination</label>
+                            <input type="text" name="destination" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Origin State</label>
+                        <input type="text" name="origin_state" class="form-input" placeholder="e.g. MH" required
+                            maxlength="2">
+                    </div>
+                </div>
+
+                <div class="form-step" id="step4" style="display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem;">Tax & Compliance</h3>
+                    <div class="form-group">
+                        <label class="form-label">e-Way Bill Number</label>
+                        <input type="text" name="eway_bill" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Invoice Number</label>
+                        <input type="text" name="invoice_no" class="form-input" required>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Supplier GSTIN</label>
+                            <input type="text" name="supplier_gst" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Receiver GSTIN</label>
+                            <input type="text" name="receiver_gst" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" id="step5" style="display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem;">Self Declaration</h3>
+                    <div style="background: #fffbeb; border: 1px solid #fde68a; padding: 1.5rem; border-radius: 12px;">
+                        <p style="font-size: 0.9rem; line-height: 1.6; margin: 0; color: #92400e;">
+                            I hereby declare that the information provided above is true and correct to the best of my
+                            knowledge. I understand that any falsification of data regarding vehicle fitness, insurance,
+                            or cargo weight is a punishable offense under the Motor Vehicles Act.
+                        </p>
+                        <label
+                            style="display: flex; gap: 0.75rem; margin-top: 1.5rem; align-items: center; cursor: pointer; font-weight: 600; color: #92400e;">
+                            <input type="checkbox" id="declarationCheck" style="width: 18px; height: 18px;">
+                            I Agree and Accept Responsibility
+                        </label>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 2.5rem; display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <button type="button" id="prevBtn" class="btn btn-outline"
+                        style="visibility: hidden;">Previous</button>
+                    <div>
+                        <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+                        <button type="submit" id="submitBtn" class="btn"
+                            style="display: none; background-color: #10b981; color: #000000; font-weight: 700;">Generate
+                            Trip QR</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="success-card">
+            <div class="checkmark-circle">✓</div>
+            <h2 style="margin-top: 0; font-weight: 700;">Trip Generated!</h2>
+            <p style="color: var(--text-muted); line-height: 1.5; margin-bottom: 0;">Validating details and generating
+                secure QR code...</p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/createTrip.js"></script>
+</body>
+
+</html>

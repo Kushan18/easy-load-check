@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LoadCheck</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/colors.css">
+    <link rel="stylesheet" href="styles/forms.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #F1F5F9;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card animate-fade-in">
+            <div class="brand-header">
+                <a href="index.html"
+                    style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);">LoadCheck</a>
+                <p style="color: var(--color-text-muted); margin-top: 0.5rem;">Create Transporter Account</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" class="form-input" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="name@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="company_name">Company Name</label>
+                    <input type="text" id="company_name" class="form-input" placeholder="Fast Logistics Pvt Ltd"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Minimum 6 characters"
+                        minlength="6" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" class="form-input" placeholder="Re-enter password"
+                        minlength="6" required>
+                </div>
+
+                <div id="errorMessage"
+                    style="color: var(--color-danger); font-size: 0.875rem; margin-bottom: 1rem; display: none;"></div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
+                Already have an account? <a href="login.html" style="color: var(--color-accent);">Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const company = document.getElementById('company_name').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            if (password !== confirm) {
+                errorDiv.textContent = "Passwords do not match!";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            try {
+                // Call Auth JS function
+                errorDiv.style.display = "none";
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.textContent = "Creating Account...";
+
+                await auth.register({ name, email, company_name: company, password });
+            } catch (err) {
+                errorDiv.textContent = err.message || "Registration failed";
+                errorDiv.style.display = "block";
+                e.target.querySelector('button').disabled = false;
+                e.target.querySelector('button').textContent = "Create Account";
+            }
+        });
+    </script>
+</body>
+
+</html>

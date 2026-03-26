@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - LoadCheck</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/colors.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <span style="color: var(--color-accent);">Load</span>Check
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="create-trip.html">Create Trip</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li style="margin-top: auto;"><a href="#" id="logoutBtn" style="color: var(--color-danger);">Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2>My Profile</h2>
+            </header>
+
+            <div class="container" style="max-width: 600px; margin-left: 0;">
+                <div class="card">
+                    <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div
+                            style="width: 80px; height: 80px; background: var(--color-primary); color: white; font-size: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                            <span id="avatarInitials">U</span>
+                        </div>
+                        <div>
+                            <h3 id="userName">Loading...</h3>
+                            <span class="badge badge-yellow" id="userRole">Transporter</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div>
+                            <label
+                                style="font-size: 0.85rem; color: var(--color-text-muted); display: block; margin-bottom: 0.25rem;">Email
+                                Address</label>
+                            <div id="userEmail" style="font-weight: 500;">--</div>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 0.85rem; color: var(--color-text-muted); display: block; margin-bottom: 0.25rem;">Company
+                                Name</label>
+                            <div id="userCompany" style="font-weight: 500;">--</div>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 0.85rem; color: var(--color-text-muted); display: block; margin-bottom: 0.25rem;">Account
+                                ID</label>
+                            <div id="userId" style="font-family: monospace; color: var(--color-text-muted);">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = auth.requireAuth();
+
+            // Populate Data
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userCompany').textContent = user.company || 'N/A';
+            document.getElementById('userId').textContent = user.id;
+            document.getElementById('avatarInitials').textContent = user.name.charAt(0).toUpperCase();
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.logout();
+            });
+        });
+    </script>
+</body>
+
+</html>
