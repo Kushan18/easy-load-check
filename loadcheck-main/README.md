@@ -31,7 +31,7 @@ LoadCheck is a full-stack web application designed to assist transport complianc
    uvicorn backend.main:app --reload
    ```
 
-4. **Access the App:**
+4. **Access  App:**
    Open your browser and navigate to `http://localhost:8000`.
 
 ## Features
